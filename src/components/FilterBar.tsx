@@ -11,7 +11,7 @@ interface FilterBarProps {
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, nationalities }) => {
-  const allNationalities = [...new Set([...nationalities, ...NATIONALITIES])].sort();
+  const allNationalities = Array.from(new Set([...nationalities, ...NATIONALITIES])).sort();
 
   return (
     <div className="bg-base-200 p-4 rounded-xl flex flex-wrap gap-3 items-center">

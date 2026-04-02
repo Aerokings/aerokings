@@ -52,7 +52,7 @@ export default function Home() {
     }
   };
 
-  const nationalities = [...new Set(maids.map((m) => m.nationality))].sort();
+  const nationalities = Array.from(new Set(maids.map((m) => m.nationality))).sort();
 
   if (loading) {
     return (
