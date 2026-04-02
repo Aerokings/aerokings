@@ -1,0 +1,35 @@
+export interface Maid {
+  id: number;
+  name: string;
+  nationality: string;
+  age: number | null;
+  experience_years: number;
+  bio: string | null;
+  location_type: "inside" | "outside";
+  status: "available" | "booked" | "inactive";
+  photo_url: string | null;
+  cv_url: string | null;
+  monthly_salary: number | null;
+  languages: string | null;
+  religion: string | null;
+  marital_status: string | null;
+  skills: string | null;
+  category: "Cook" | "Cleaner" | "Caregiver" | "Nanny";
+  weight: string | null;
+  height: string | null;
+  experience_breakdown: string | null;
+  cooking_skills: string | null;
+  available_emirates: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Filters {
+  search: string;
+  nationality: string;
+  location_type: string;
+  status: string;
+  category: string;
+}
+
+export type ViewMode = "browse" | "admin";
