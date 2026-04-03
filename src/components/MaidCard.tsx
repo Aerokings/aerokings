@@ -53,7 +53,7 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
           {maid.status === "booked" ? (
             <span className="btn btn-error btn-sm flex-1 no-animation cursor-default opacity-80">🔒 Booked</span>
           ) : (
-            <a href={getWhatsAppLink(maid)} target="_blank" rel="noopener noreferrer" className="btn btn-success btn-sm flex-1">
+            <a href={getWhatsAppLink(maid)} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="btn btn-success btn-sm flex-1">
               <MessageCircle size={14} /> WhatsApp
             </a>
           )}
