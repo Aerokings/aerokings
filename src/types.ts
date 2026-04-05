@@ -27,9 +27,9 @@ export interface Maid {
 export interface Filters {
   search: string;
   nationality: string;
-  location_type: string;
-  status: string;
   category: string;
+  priceMin: string;
+  priceMax: string;
 }
 
 export type ViewMode = "browse" | "admin";
