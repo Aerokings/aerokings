@@ -28,6 +28,7 @@ export interface Filters {
   search: string;
   nationality: string;
   category: string;
+  rate: string;
 }
 
 export type ViewMode = "browse" | "admin";

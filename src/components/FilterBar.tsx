@@ -10,6 +10,14 @@ interface FilterBarProps {
   nationalities: string[];
 }
 
+const RATE_RANGES = [
+  { label: "Under 3,000 AED", min: 0, max: 3000 },
+  { label: "3,000 – 5,000 AED", min: 3000, max: 5000 },
+  { label: "5,000 – 7,000 AED", min: 5000, max: 7000 },
+  { label: "7,000 – 10,000 AED", min: 7000, max: 10000 },
+  { label: "Above 10,000 AED", min: 10000, max: 999999 },
+];
+
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, nationalities }) => {
   const allNationalities = Array.from(new Set([...nationalities, ...NATIONALITIES])).sort();
 
@@ -36,12 +44,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, n
         <option value="">All Categories</option>
         {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
       </select>
-      {(filters.search || filters.nationality || filters.category) && (
+      <select className="select select-bordered select-sm" value={filters.rate}
+        onChange={(e) => onFilterChange({ ...filters, rate: e.target.value })}>
+        <option value="">All Rates</option>
+        {RATE_RANGES.map((r, i) => (<option key={i} value={String(i)}>{r.label}</option>))}
+      </select>
+      {(filters.search || filters.nationality || filters.category || filters.rate) && (
         <button className="btn btn-ghost btn-sm"
-          onClick={() => onFilterChange({ search: "", nationality: "", category: "" })}>
+          onClick={() => onFilterChange({ search: "", nationality: "", category: "", rate: "" })}>
           Clear
         </button>
       )}
     </div>
   );
 };
+
+export { RATE_RANGES };
