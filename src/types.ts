@@ -28,8 +28,6 @@ export interface Filters {
   search: string;
   nationality: string;
   category: string;
-  priceMin: string;
-  priceMax: string;
 }
 
 export type ViewMode = "browse" | "admin";

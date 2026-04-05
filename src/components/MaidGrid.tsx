@@ -15,8 +15,6 @@ export const MaidGrid: React.FC<MaidGridProps> = ({ maids, filters, onViewDetail
     if (filters.search && !m.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
     if (filters.nationality && m.nationality !== filters.nationality) return false;
     if (filters.category && m.category !== filters.category) return false;
-    if (filters.priceMin && (m.monthly_salary === null || m.monthly_salary < Number(filters.priceMin))) return false;
-    if (filters.priceMax && (m.monthly_salary === null || m.monthly_salary > Number(filters.priceMax))) return false;
     return true;
   });
 

@@ -36,27 +36,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, n
         <option value="">All Categories</option>
         {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
       </select>
-      <div className="flex items-center gap-1">
-        <span className="text-xs opacity-60 whitespace-nowrap">💰 Salary:</span>
-        <input
-          type="number"
-          className="input input-bordered input-sm w-24"
-          placeholder="Min AED"
-          value={filters.priceMin}
-          onChange={(e) => onFilterChange({ ...filters, priceMin: e.target.value })}
-        />
-        <span className="text-xs opacity-50">–</span>
-        <input
-          type="number"
-          className="input input-bordered input-sm w-24"
-          placeholder="Max AED"
-          value={filters.priceMax}
-          onChange={(e) => onFilterChange({ ...filters, priceMax: e.target.value })}
-        />
-      </div>
-      {(filters.search || filters.nationality || filters.category || filters.priceMin || filters.priceMax) && (
+      {(filters.search || filters.nationality || filters.category) && (
         <button className="btn btn-ghost btn-sm"
-          onClick={() => onFilterChange({ search: "", nationality: "", category: "", priceMin: "", priceMax: "" })}>
+          onClick={() => onFilterChange({ search: "", nationality: "", category: "" })}>
           Clear
         </button>
       )}
