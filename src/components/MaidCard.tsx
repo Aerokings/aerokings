@@ -17,7 +17,7 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
     <div className="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">
       <figure className="relative h-56 bg-base-300 overflow-hidden">
         {photoUrl ? (
-          <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover" />
+          <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover object-top" />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-base-content/30">
             <Globe size={48} />
