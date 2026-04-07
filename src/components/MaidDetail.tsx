@@ -74,7 +74,7 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
 
           <div className="relative h-64 bg-base-300">
             {photoUrl ? (
-              <img src={photoUrl} alt={maid.name} className="w-full h-full object-contain" />
+              <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover object-top" />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-base-content/30">
                 <Globe size={64} />
