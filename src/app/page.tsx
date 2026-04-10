@@ -13,7 +13,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>("browse");
   const [maids, setMaids] = useState<Maid[]>([]);
   const [filters, setFilters] = useState<Filters>({
-    search: "", nationality: "", location_type: "", status: "", category: ""
+    search: "", nationality: "", category: "", rate: ""
   });
   const [selectedMaid, setSelectedMaid] = useState<Maid | null>(null);
   const [loading, setLoading] = useState(true);
