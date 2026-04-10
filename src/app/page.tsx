@@ -13,7 +13,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>("browse");
   const [maids, setMaids] = useState<Maid[]>([]);
   const [filters, setFilters] = useState<Filters>({
-    search: "", nationality: "", category: "", rate: ""
+    search: "", nationality: "", location_type: "", status: "", category: ""
   });
   const [selectedMaid, setSelectedMaid] = useState<Maid | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ export default function Home() {
   const handleViewChange = (mode: ViewMode) => {
     if (mode === "admin" && !adminAuth) {
       const pwd = prompt("Enter admin password:");
-      if (pwd === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Summer@2025")) {
+      if (pwd === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "airoking2024")) {
         setAdminAuth(true);
         setViewMode("admin");
       } else {
@@ -52,7 +52,7 @@ export default function Home() {
     }
   };
 
-  const nationalities = Array.from(new Set(maids.map((m) => m.nationality))).sort();
+  const nationalities = [...new Set(maids.map((m) => m.nationality))].sort();
 
   if (loading) {
     return (
@@ -82,6 +82,30 @@ export default function Home() {
           onRefresh={loadMaids}
         />
       )}
+
+      {/* Footer */}
+      <footer className="bg-neutral text-neutral-content mt-12">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center space-y-4">
+            <p className="text-sm leading-relaxed opacity-90">
+              <strong>Kadhama.com</strong> is a premium digital platform owned and operated by{" "}
+              <strong>Heilie&apos;s Wings LLC</strong> (License No: 2538676.01). We are a legally
+              registered entity in Sharjah Media City (Shams), UAE, specialized in human resources
+              provision and specialized recruitment services. We facilitate domestic worker matching
+              in accordance with UAE Ministry of Human Resources &amp; Emiratisation (MOHRE)
+              regulations and through authorized Tadbeer partners.
+            </p>
+            <p className="text-sm opacity-80">
+              <strong>Registered Activities:</strong> Personnel search &amp; placement &nbsp;|&nbsp;
+              Human resources provision &nbsp;|&nbsp; Tour operations &amp; reservation services.
+            </p>
+            <div className="divider divider-neutral my-2"></div>
+            <p className="text-xs opacity-70">
+              © 2026 Kadhama. All Rights Reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
