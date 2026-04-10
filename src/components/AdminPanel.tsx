@@ -12,7 +12,7 @@ interface AdminPanelProps {
 
 interface FormData {
   name: string; nationality: string; age: string; experience_years: string;
-  bio: string; location_type: string; status: string; monthly_salary: string;
+  bio: string; location_type: string; status: string; monthly_salary: string; salary: string;
   languages: string; religion: string; marital_status: string; skills: string;
   category: string; weight: string; height: string; experience_breakdown: string;
   cooking_skills: string; available_emirates: string;
@@ -21,7 +21,7 @@ interface FormData {
 const emptyForm: FormData = {
   name: "", nationality: "", age: "", experience_years: "0",
   bio: "", location_type: "inside", status: "available",
-  monthly_salary: "", languages: "", religion: "", marital_status: "", skills: "",
+  monthly_salary: "", salary: "", languages: "", religion: "", marital_status: "", skills: "",
   category: "Cleaner", weight: "", height: "", experience_breakdown: "", cooking_skills: "",
   available_emirates: ""
 };
@@ -96,7 +96,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
       name: maid.name, nationality: maid.nationality, age: maid.age?.toString() || "",
       experience_years: maid.experience_years.toString(), bio: maid.bio || "",
       location_type: maid.location_type, status: maid.status,
-      monthly_salary: maid.monthly_salary?.toString() || "", languages: maid.languages || "",
+      monthly_salary: maid.monthly_salary?.toString() || "", salary: maid.salary?.toString() || "", languages: maid.languages || "",
       religion: maid.religion || "", marital_status: maid.marital_status || "",
       skills: maid.skills || "", category: maid.category || "Cleaner",
       weight: maid.weight || "", height: maid.height || "",
@@ -118,7 +118,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
         age: form.age ? parseInt(form.age) : null,
         experience_years: parseInt(form.experience_years) || 0,
         bio: form.bio || null, location_type: form.location_type,
-        status: form.status, monthly_salary: form.monthly_salary ? parseFloat(form.monthly_salary) : null,
+        status: form.status, monthly_salary: form.monthly_salary ? parseFloat(form.monthly_salary) : null, salary: form.salary ? parseFloat(form.salary) : null,
         languages: form.languages || null, religion: form.religion || null,
         marital_status: form.marital_status || null, skills: form.skills || null,
         category: form.category, weight: form.weight || null, height: form.height || null,
@@ -313,9 +313,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
                   onChange={(e) => updateField("experience_years", e.target.value)} min="0" max="30" />
               </div>
               <div>
-                <label className="label"><span className="label-text text-xs font-medium">Monthly Salary (AED)</span></label>
+                <label className="label"><span className="label-text text-xs font-medium">Rate (AED) - Tadbeer Placement Fee</span></label>
                 <input type="number" className="input input-bordered input-sm w-full" value={form.monthly_salary}
                   onChange={(e) => updateField("monthly_salary", e.target.value)} placeholder="e.g. 1500" />
+              </div>
+              <div>
+                <label className="label"><span className="label-text text-xs font-medium">Salary (AED) - Monthly Salary</span></label>
+                <input type="number" className="input input-bordered input-sm w-full" value={form.salary}
+                  onChange={(e) => updateField("salary", e.target.value)} placeholder="e.g. 1500" />
               </div>
               <div>
                 <label className="label"><span className="label-text text-xs font-medium">Status</span></label>
@@ -407,7 +412,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
             <thead>
               <tr className="bg-base-200">
                 <th>ID</th><th>Photo</th><th>Name</th><th>Role</th><th>Nationality</th>
-                <th>Age</th><th>Exp</th><th>Location</th><th>Rate</th><th>Status</th><th className="text-center">Actions</th>
+                <th>Age</th><th>Exp</th><th>Location</th><th>Salary</th><th>Rate</th><th>Status</th><th className="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -437,7 +442,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
                     <td className="text-xs">{maid.age || "-"}</td>
                     <td className="text-xs">{maid.experience_years}y</td>
                     <td><span className="text-xs">{getLocationLabel(maid.location_type, maid.status)}</span></td>
-                    <td className="text-xs font-medium">{formatSalary(maid.monthly_salary)}</td>
+                    <td className="text-xs font-medium">{formatSalary(maid.salary)}</td><td className="text-xs font-medium">{formatSalary(maid.monthly_salary)}</td>
                     <td><span className={`badge ${getStatusBadgeClass(maid.status)} badge-xs`}>{maid.status}</span></td>
                     <td>
                       <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
@@ -462,7 +467,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
                   </tr>
                   {expandedRow === maid.id && (
                     <tr>
-                      <td colSpan={11} className="bg-base-200/50 p-3">
+                      <td colSpan={12} className="bg-base-200/50 p-3">
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                           <div><span className="font-semibold text-base-content/60">Height:</span> {maid.height || "-"}</div>
                           <div><span className="font-semibold text-base-content/60">Weight:</span> {maid.weight || "-"}</div>

@@ -2,7 +2,7 @@
 import React from "react";
 import { MessageCircle, Eye, Globe } from "lucide-react";
 import { Maid } from "@/types";
-import { getWhatsAppLink, formatSalary, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
+import { getWhatsAppLink, formatSalary, formatRate, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
 import { getPhotoUrl } from "@/lib/supabase";
 
 interface MaidCardProps {
@@ -43,7 +43,8 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
             <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Role</td><td className="py-0.5"><span className={`badge ${getCategoryColor(maid.category)} badge-xs font-bold`}>{getCategoryIcon(maid.category)} {maid.category}</span></td></tr>
             <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Experience</td><td className="py-0.5">{maid.experience_years} years</td></tr>
             <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Location</td><td className="py-0.5">{maid.status === "booked" ? <span className="badge badge-error badge-xs font-bold">🔒 Booked</span> : getLocationLabel(maid.location_type)}</td></tr>
-            <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Rate</td><td className="py-0.5 font-semibold text-primary">{formatSalary(maid.monthly_salary)}</td></tr>
+            <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Salary</td><td className="py-0.5 font-semibold">{formatSalary(maid.salary)}</td></tr>
+            <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Rate</td><td className="py-0.5 font-semibold text-primary">{formatRate(maid.monthly_salary)}</td></tr>
           </tbody>
         </table>
         <div className="card-actions mt-3 flex gap-2">

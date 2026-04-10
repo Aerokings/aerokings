@@ -50,6 +50,11 @@ export function formatSalary(amount: number | null): string {
   return `AED ${amount.toLocaleString()}`;
 }
 
+export function formatRate(amount: number | null): string {
+  if (!amount) return "Contact for price";
+  return `AED ${amount.toLocaleString()}`;
+}
+
 export function getLocationLabel(type: string, status?: string): string {
   if (status === "booked") return "🔒 Booked";
   return type === "inside" ? "🇦🇪 Inside Country" : "✈️ Outside Country";

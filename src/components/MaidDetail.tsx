@@ -5,7 +5,7 @@ import {
   BookOpen, DollarSign, Calendar, FileText, Ruler, Weight, UtensilsCrossed, Languages, CheckCircle
 } from "lucide-react";
 import { Maid } from "@/types";
-import { getWhatsAppLink, formatSalary, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
+import { getWhatsAppLink, formatSalary, formatRate, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
 import { getPhotoUrl, supabase } from "@/lib/supabase";
 import { ChatBot } from "./ChatBot";
 
@@ -140,7 +140,8 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
                 value={isBooked ? "🔒 Booked" : getLocationLabel(maid.location_type)}
                 highlight={isBooked ? "error" : undefined}
               />
-              <InfoItem icon={<DollarSign size={14} />} label="Rate" value={formatSalary(maid.monthly_salary)} />
+              <InfoItem icon={<DollarSign size={14} />} label="Salary" value={formatSalary(maid.salary)} />
+              <InfoItem icon={<DollarSign size={14} />} label="Rate" value={formatRate(maid.monthly_salary)} />
             </div>
 
             {maid.available_emirates && (
