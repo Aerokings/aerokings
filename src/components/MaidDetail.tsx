@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import {
-  X, MessageCircle, MapPin, Briefcase, Globe, Heart,
+  X, MessageCircle, MapPin, Briefcase, Globe, Heart, Video,
   BookOpen, DollarSign, Calendar, FileText, Ruler, Weight, UtensilsCrossed, Languages, CheckCircle
 } from "lucide-react";
 import { Maid } from "@/types";
 import { getWhatsAppLink, formatSalary, formatRate, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
 import { getPhotoUrl, supabase } from "@/lib/supabase";
 import { ChatBot } from "./ChatBot";
+import { VideoCallBooking } from "./VideoCallBooking";
 
 interface MaidDetailProps {
   maid: Maid;
@@ -19,6 +20,7 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
   const [booking, setBooking] = useState(false);
   const [justBooked, setJustBooked] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showVideoBooking, setShowVideoBooking] = useState(false);
   const isBooked = maid.status === "booked" || justBooked;
   const maidRef = `AK-${String(maid.id).padStart(4, "0")}`;
   const photoUrl = getPhotoUrl(maid.photo_url);
@@ -215,9 +217,14 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
                   <span className="font-semibold">This housemaid has been booked</span>
                 </div>
               ) : (
-                <button className="btn btn-primary btn-block" onClick={handleBook} disabled={booking}>
-                  {booking ? <span className="loading loading-spinner loading-sm" /> : <><CheckCircle size={18} /> Book This Housemaid</>}
-                </button>
+                <>
+                  <button className="btn btn-primary btn-block" onClick={handleBook} disabled={booking}>
+                    {booking ? <span className="loading loading-spinner loading-sm" /> : <><CheckCircle size={18} /> Book This Housemaid</>}
+                  </button>
+                  <button className="btn btn-info btn-block" onClick={() => setShowVideoBooking(true)}>
+                    <Video size={18} /> 📹 Book Video Call
+                  </button>
+                </>
               )}
               <a href={getWhatsAppLink(maid)} target="_blank" rel="noopener noreferrer" className="btn btn-success btn-block">
                 <MessageCircle size={18} /> Chat on WhatsApp About {maid.name}
@@ -227,6 +234,7 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
         </div>
       </div>
 
+      {showVideoBooking && <VideoCallBooking maid={maid} onClose={() => setShowVideoBooking(false)} />}
       {showChat && <ChatBot maidName={maid.name} maidRef={maidRef} onClose={() => setShowChat(false)} />}
     </>
   );
