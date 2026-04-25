@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import {
-  X, MessageCircle, MapPin, Briefcase, Globe, Heart, Video,
+  X, MessageCircle, MapPin, Briefcase, Globe, Heart,
   BookOpen, DollarSign, Calendar, FileText, Ruler, Weight, UtensilsCrossed, Languages, CheckCircle
 } from "lucide-react";
 import { Maid } from "@/types";
-import { getWhatsAppLink, formatSalary, formatRate, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
+import { getWhatsAppLink, formatSalary, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
 import { getPhotoUrl, supabase } from "@/lib/supabase";
 import { ChatBot } from "./ChatBot";
 import { VideoCallBooking } from "./VideoCallBooking";
@@ -76,7 +76,7 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
 
           <div className="relative h-64 bg-base-300">
             {photoUrl ? (
-              <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover object-top" />
+              <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover" />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-base-content/30">
                 <Globe size={64} />
@@ -142,8 +142,7 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
                 value={isBooked ? "🔒 Booked" : getLocationLabel(maid.location_type)}
                 highlight={isBooked ? "error" : undefined}
               />
-              <InfoItem icon={<DollarSign size={14} />} label="Salary" value={formatSalary(maid.salary)} />
-              <InfoItem icon={<DollarSign size={14} />} label="Rate" value={formatRate(maid.monthly_salary)} />
+              <InfoItem icon={<DollarSign size={14} />} label="Rate" value={formatSalary(maid.monthly_salary)} />
             </div>
 
             {maid.available_emirates && (
@@ -217,25 +216,25 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
                   <span className="font-semibold">This housemaid has been booked</span>
                 </div>
               ) : (
-                <>
-                  <button className="btn btn-primary btn-block" onClick={handleBook} disabled={booking}>
-                    {booking ? <span className="loading loading-spinner loading-sm" /> : <><CheckCircle size={18} /> Book This Housemaid</>}
-                  </button>
-                  <button className="btn btn-info btn-block" onClick={() => setShowVideoBooking(true)}>
-                    <Video size={18} /> 📹 Book Video Call
-                  </button>
-                </>
+                <button className="btn btn-primary btn-block" onClick={handleBook} disabled={booking}>
+                  {booking ? <span className="loading loading-spinner loading-sm" /> : <><CheckCircle size={18} /> Book This Housemaid</>}
+                </button>
               )}
               <a href={getWhatsAppLink(maid)} target="_blank" rel="noopener noreferrer" className="btn btn-success btn-block">
                 <MessageCircle size={18} /> Chat on WhatsApp About {maid.name}
               </a>
+              {!isBooked && (
+                <button className="btn btn-info btn-block" onClick={() => setShowVideoBooking(true)}>
+                  📹 Book Video Call
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {showVideoBooking && <VideoCallBooking maid={maid} onClose={() => setShowVideoBooking(false)} />}
       {showChat && <ChatBot maidName={maid.name} maidRef={maidRef} onClose={() => setShowChat(false)} />}
+      {showVideoBooking && <VideoCallBooking maid={maid} onClose={() => setShowVideoBooking(false)} />}
     </>
   );
 };
