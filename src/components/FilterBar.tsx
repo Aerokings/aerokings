@@ -10,16 +10,8 @@ interface FilterBarProps {
   nationalities: string[];
 }
 
-const RATE_RANGES = [
-  { label: "Under 3,000 AED", min: 0, max: 3000 },
-  { label: "3,000 – 5,000 AED", min: 3000, max: 5000 },
-  { label: "5,000 – 7,000 AED", min: 5000, max: 7000 },
-  { label: "7,000 – 10,000 AED", min: 7000, max: 10000 },
-  { label: "Above 10,000 AED", min: 10000, max: 999999 },
-];
-
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, nationalities }) => {
-  const allNationalities = Array.from(new Set([...nationalities, ...NATIONALITIES])).sort();
+  const allNationalities = [...new Set([...nationalities, ...NATIONALITIES])].sort();
 
   return (
     <div className="bg-base-200 p-4 rounded-xl flex flex-wrap gap-3 items-center">
@@ -44,19 +36,24 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, n
         <option value="">All Categories</option>
         {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
       </select>
-      <select className="select select-bordered select-sm" value={filters.rate}
-        onChange={(e) => onFilterChange({ ...filters, rate: e.target.value })}>
-        <option value="">All Rates</option>
-        {RATE_RANGES.map((r, i) => (<option key={i} value={String(i)}>{r.label}</option>))}
+      <select className="select select-bordered select-sm" value={filters.location_type}
+        onChange={(e) => onFilterChange({ ...filters, location_type: e.target.value })}>
+        <option value="">All Locations</option>
+        <option value="inside">🇦🇪 Inside Country</option>
+        <option value="outside">✈️ Outside Country</option>
       </select>
-      {(filters.search || filters.nationality || filters.category || filters.rate) && (
+      <select className="select select-bordered select-sm" value={filters.status}
+        onChange={(e) => onFilterChange({ ...filters, status: e.target.value })}>
+        <option value="">All Status</option>
+        <option value="available">✅ Available</option>
+        <option value="booked">📌 Booked</option>
+      </select>
+      {(filters.search || filters.nationality || filters.location_type || filters.status || filters.category) && (
         <button className="btn btn-ghost btn-sm"
-          onClick={() => onFilterChange({ search: "", nationality: "", category: "", rate: "" })}>
+          onClick={() => onFilterChange({ search: "", nationality: "", location_type: "", status: "", category: "" })}>
           Clear
         </button>
       )}
     </div>
   );
 };
-
-export { RATE_RANGES };

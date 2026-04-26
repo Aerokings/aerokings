@@ -3,7 +3,6 @@ import React from "react";
 import { Users } from "lucide-react";
 import { Maid, Filters } from "@/types";
 import { MaidCard } from "./MaidCard";
-import { RATE_RANGES } from "./FilterBar";
 
 interface MaidGridProps {
   maids: Maid[];
@@ -15,11 +14,9 @@ export const MaidGrid: React.FC<MaidGridProps> = ({ maids, filters, onViewDetail
   const filtered = maids.filter((m) => {
     if (filters.search && !m.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
     if (filters.nationality && m.nationality !== filters.nationality) return false;
+    if (filters.location_type && m.location_type !== filters.location_type) return false;
+    if (filters.status && m.status !== filters.status) return false;
     if (filters.category && m.category !== filters.category) return false;
-    if (filters.rate) {
-      const range = RATE_RANGES[Number(filters.rate)];
-      if (range && (m.monthly_salary === null || m.monthly_salary < range.min || m.monthly_salary > range.max)) return false;
-    }
     return true;
   });
 

@@ -67,25 +67,7 @@ export const VideoCallBooking: React.FC<VideoCallBookingProps> = ({ maid, onClos
       if (dbError) throw dbError;
 
       // Send email notification to admin via API route
-      try {
-        await fetch("/api/notify-booking", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            booking_ref: bookingRef,
-            maid_name: maid.name,
-            customer_name: bookingData.customer_name,
-            customer_phone: bookingData.customer_phone,
-            customer_email: bookingData.customer_email,
-            booking_date: bookingData.booking_date,
-            booking_time: bookingData.booking_time,
-            meeting_link: meetingLink,
-          }),
-        });
-      } catch {
-        // Email notification is best-effort; don't fail the booking
-        console.warn("Email notification failed, but booking was saved.");
-      }
+      // Email notification is handled automatically by the backend system
 
       setResult({
         booking_ref: bookingRef,
