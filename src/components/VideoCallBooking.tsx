@@ -66,23 +66,20 @@ export const VideoCallBooking: React.FC<VideoCallBookingProps> = ({ maid, onClos
 
       if (dbError) throw dbError;
 
-      // Send email notification to admin via FormSubmit
+      // Send email notification to admin via API route
       try {
-        await fetch("https://formsubmit.co/ajax/recruitersrace@gmail.com", {
+        await fetch("/api/notify-booking", {
           method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            _subject: `📹 New Video Call Booking - ${bookingRef}`,
-            "Booking Reference": bookingRef,
-            "Maid Name": maid.name,
-            "Maid ID": maid.id,
-            "Customer Name": bookingData.customer_name,
-            "Customer Phone": bookingData.customer_phone,
-            "Customer Email": bookingData.customer_email,
-            "Date": bookingData.booking_date,
-            "Time": bookingData.booking_time,
-            "Meeting Link": meetingLink,
-            _template: "table",
+            booking_ref: bookingRef,
+            maid_name: maid.name,
+            customer_name: bookingData.customer_name,
+            customer_phone: bookingData.customer_phone,
+            customer_email: bookingData.customer_email,
+            booking_date: bookingData.booking_date,
+            booking_time: bookingData.booking_time,
+            meeting_link: meetingLink,
           }),
         });
       } catch {
