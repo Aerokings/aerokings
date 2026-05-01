@@ -47,7 +47,7 @@ export const NATIONALITIES = [
 
 export function formatSalary(amount: number | null): string {
   if (!amount) return "Contact for price";
-  return `AED ${amount.toLocaleString()}/month`;
+  return `AED ${amount.toLocaleString()}`;
 }
 
 export function getLocationLabel(type: string, status?: string): string {
