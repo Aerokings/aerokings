@@ -229,6 +229,9 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
                   📹 Book Video Call
                 </button>
               )}
+              <button className="btn btn-outline btn-block" onClick={onClose}>
+                <X size={16} /> Close Profile
+              </button>
             </div>
           </div>
         </div>
