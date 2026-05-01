@@ -14,8 +14,6 @@ const RATE_RANGES = [
   { label: "Under AED 5,000", value: "0-5000" },
   { label: "AED 5,000 - 10,000", value: "5000-10000" },
   { label: "AED 10,000 - 15,000", value: "10000-15000" },
-  { label: "AED 15,000 - 20,000", value: "15000-20000" },
-  { label: "AED 20,000+", value: "20000-999999" },
 ];
 
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, nationalities }) => {
