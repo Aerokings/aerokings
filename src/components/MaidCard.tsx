@@ -36,6 +36,7 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
       </figure>
       <div className="card-body p-4 gap-1">
         <h3 className="card-title text-base mb-1">{maid.name}</h3>
+        {maid.passport_number && <p className="text-xs text-base-content/50 -mt-1 mb-1">🛂 {maid.passport_number}</p>}
         <table className="text-xs w-full">
           <tbody>
             <tr><td className="text-base-content/50 pr-2 py-0.5 whitespace-nowrap font-medium">Nationality</td><td className="py-0.5">{maid.nationality}</td></tr>

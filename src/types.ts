@@ -9,6 +9,7 @@ export interface Maid {
   status: "available" | "booked" | "inactive";
   photo_url: string | null;
   cv_url: string | null;
+  passport_number: string | null;
   monthly_salary: number | null;
   languages: string | null;
   religion: string | null;

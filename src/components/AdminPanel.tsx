@@ -15,7 +15,7 @@ interface FormData {
   bio: string; location_type: string; status: string; monthly_salary: string;
   languages: string; religion: string; marital_status: string; skills: string;
   category: string; weight: string; height: string; experience_breakdown: string;
-  cooking_skills: string; available_emirates: string;
+  cooking_skills: string; available_emirates: string; passport_number: string;
 }
 
 const emptyForm: FormData = {
@@ -23,7 +23,7 @@ const emptyForm: FormData = {
   bio: "", location_type: "inside", status: "available",
   monthly_salary: "", languages: "", religion: "", marital_status: "", skills: "",
   category: "Cleaner", weight: "", height: "", experience_breakdown: "", cooking_skills: "",
-  available_emirates: ""
+  available_emirates: "", passport_number: ""
 };
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
@@ -101,7 +101,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
       skills: maid.skills || "", category: maid.category || "Cleaner",
       weight: maid.weight || "", height: maid.height || "",
       experience_breakdown: maid.experience_breakdown || "",
-      cooking_skills: maid.cooking_skills || "", available_emirates: maid.available_emirates || ""
+      cooking_skills: maid.cooking_skills || "", available_emirates: maid.available_emirates || "",
+      passport_number: maid.passport_number || ""
     });
     setEditingId(maid.id);
     setPhotoFile(null);
@@ -124,6 +125,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
         category: form.category, weight: form.weight || null, height: form.height || null,
         experience_breakdown: form.experience_breakdown || null,
         cooking_skills: form.cooking_skills || null, available_emirates: form.available_emirates || null,
+        passport_number: form.passport_number || null,
       };
 
       if (editingId) {
@@ -250,6 +252,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
                 <label className="label"><span className="label-text text-xs font-medium">Full Name *</span></label>
                 <input className="input input-bordered input-sm w-full" value={form.name}
                   onChange={(e) => updateField("name", e.target.value)} placeholder="e.g. Maria Santos" />
+              </div>
+              <div>
+                <label className="label"><span className="label-text text-xs font-medium">Passport Number</span></label>
+                <input className="input input-bordered input-sm w-full" value={form.passport_number}
+                  onChange={(e) => updateField("passport_number", e.target.value)} placeholder="e.g. AB1234567" />
               </div>
               <div>
                 <label className="label"><span className="label-text text-xs font-medium">Nationality *</span></label>

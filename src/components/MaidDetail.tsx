@@ -97,6 +97,7 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
           <div className="p-5 -mt-6 relative">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <h2 className="text-xl font-bold">{maid.name}</h2>
+              {maid.passport_number && <span className="text-xs text-base-content/50">🛂 {maid.passport_number}</span>}
               <span className={`badge ${getCategoryColor(maid.category)} badge-sm font-bold`}>
                 {getCategoryIcon(maid.category)} {maid.category}
               </span>
