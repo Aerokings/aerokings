@@ -12,7 +12,7 @@ interface AdminPanelProps {
 
 interface FormData {
   name: string; nationality: string; age: string; experience_years: string;
-  bio: string; location_type: string; status: string; monthly_salary: string;
+  bio: string; location_type: string; status: string; monthly_salary: string; salary: string;
   languages: string; religion: string; marital_status: string; skills: string;
   category: string; weight: string; height: string; experience_breakdown: string;
   cooking_skills: string; available_emirates: string; passport_number: string;
@@ -21,7 +21,7 @@ interface FormData {
 const emptyForm: FormData = {
   name: "", nationality: "", age: "", experience_years: "0",
   bio: "", location_type: "inside", status: "available",
-  monthly_salary: "", languages: "", religion: "", marital_status: "", skills: "",
+  monthly_salary: "", salary: "", languages: "", religion: "", marital_status: "", skills: "",
   category: "Cleaner", weight: "", height: "", experience_breakdown: "", cooking_skills: "",
   available_emirates: "", passport_number: ""
 };
@@ -96,7 +96,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
       name: maid.name, nationality: maid.nationality, age: maid.age?.toString() || "",
       experience_years: maid.experience_years.toString(), bio: maid.bio || "",
       location_type: maid.location_type, status: maid.status,
-      monthly_salary: maid.monthly_salary?.toString() || "", languages: maid.languages || "",
+      monthly_salary: maid.monthly_salary?.toString() || "", salary: (maid as any).salary?.toString() || "", languages: maid.languages || "",
       religion: maid.religion || "", marital_status: maid.marital_status || "",
       skills: maid.skills || "", category: maid.category || "Cleaner",
       weight: maid.weight || "", height: maid.height || "",
@@ -119,7 +119,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
         age: form.age ? parseInt(form.age) : null,
         experience_years: parseInt(form.experience_years) || 0,
         bio: form.bio || null, location_type: form.location_type,
-        status: form.status, monthly_salary: form.monthly_salary ? parseFloat(form.monthly_salary) : null,
+        status: form.status, monthly_salary: form.monthly_salary ? parseFloat(form.monthly_salary) : null, salary: form.salary ? parseFloat(form.salary) : null,
         languages: form.languages || null, religion: form.religion || null,
         marital_status: form.marital_status || null, skills: form.skills || null,
         category: form.category, weight: form.weight || null, height: form.height || null,
@@ -320,9 +320,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
                   onChange={(e) => updateField("experience_years", e.target.value)} min="0" max="30" />
               </div>
               <div>
-                <label className="label"><span className="label-text text-xs font-medium">Monthly Salary (AED)</span></label>
+                <label className="label"><span className="label-text text-xs font-medium">Rate / Tadbeer Fee (AED)</span></label>
                 <input type="number" className="input input-bordered input-sm w-full" value={form.monthly_salary}
-                  onChange={(e) => updateField("monthly_salary", e.target.value)} placeholder="e.g. 1500" />
+                  onChange={(e) => updateField("monthly_salary", e.target.value)} placeholder="e.g. 8000" />
+              </div>
+              <div>
+                <label className="label"><span className="label-text text-xs font-medium">Maid Salary (AED/month)</span></label>
+                <input type="number" className="input input-bordered input-sm w-full" value={form.salary}
+                  onChange={(e) => updateField("salary", e.target.value)} placeholder="e.g. 1500" />
               </div>
               <div>
                 <label className="label"><span className="label-text text-xs font-medium">Status</span></label>

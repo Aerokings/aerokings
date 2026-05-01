@@ -11,6 +11,7 @@ export interface Maid {
   cv_url: string | null;
   passport_number: string | null;
   monthly_salary: number | null;
+  salary: number | null;
   languages: string | null;
   religion: string | null;
   marital_status: string | null;
