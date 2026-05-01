@@ -10,8 +10,16 @@ interface FilterBarProps {
   nationalities: string[];
 }
 
+const RATE_RANGES = [
+  { label: "Under AED 5,000", value: "0-5000" },
+  { label: "AED 5,000 - 10,000", value: "5000-10000" },
+  { label: "AED 10,000 - 15,000", value: "10000-15000" },
+  { label: "AED 15,000 - 20,000", value: "15000-20000" },
+  { label: "AED 20,000+", value: "20000-999999" },
+];
+
 export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, nationalities }) => {
-  const allNationalities = [...new Set([...nationalities, ...NATIONALITIES])].sort();
+  const allNationalities = Array.from(new Set([...nationalities, ...NATIONALITIES])).sort();
 
   return (
     <div className="bg-base-200 p-4 rounded-xl flex flex-wrap gap-3 items-center">
@@ -36,21 +44,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, n
         <option value="">All Categories</option>
         {CATEGORIES.map((c) => (<option key={c} value={c}>{c}</option>))}
       </select>
-      <select className="select select-bordered select-sm" value={filters.location_type}
-        onChange={(e) => onFilterChange({ ...filters, location_type: e.target.value })}>
-        <option value="">All Locations</option>
-        <option value="inside">🇦🇪 Inside Country</option>
-        <option value="outside">✈️ Outside Country</option>
+      <select className="select select-bordered select-sm" value={filters.rateRange}
+        onChange={(e) => onFilterChange({ ...filters, rateRange: e.target.value })}>
+        <option value="">All Rates</option>
+        {RATE_RANGES.map((r) => (<option key={r.value} value={r.value}>{r.label}</option>))}
       </select>
-      <select className="select select-bordered select-sm" value={filters.status}
-        onChange={(e) => onFilterChange({ ...filters, status: e.target.value })}>
-        <option value="">All Status</option>
-        <option value="available">✅ Available</option>
-        <option value="booked">📌 Booked</option>
-      </select>
-      {(filters.search || filters.nationality || filters.location_type || filters.status || filters.category) && (
+      {(filters.search || filters.nationality || filters.category || filters.rateRange) && (
         <button className="btn btn-ghost btn-sm"
-          onClick={() => onFilterChange({ search: "", nationality: "", location_type: "", status: "", category: "" })}>
+          onClick={() => onFilterChange({ search: "", nationality: "", category: "", rateRange: "" })}>
           Clear
         </button>
       )}
