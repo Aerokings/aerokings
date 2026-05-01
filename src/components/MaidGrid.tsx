@@ -12,7 +12,13 @@ interface MaidGridProps {
 
 export const MaidGrid: React.FC<MaidGridProps> = ({ maids, filters, onViewDetail }) => {
   const filtered = maids.filter((m) => {
-    if (filters.search && !m.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      const matchName = m.name.toLowerCase().includes(q);
+      const matchPassport = m.passport_number?.toLowerCase().includes(q);
+      const matchId = String(m.id).includes(q);
+      if (!matchName && !matchPassport && !matchId) return false;
+    }
     if (filters.nationality && m.nationality !== filters.nationality) return false;
     if (filters.category && m.category !== filters.category) return false;
     if (filters.rateRange) {

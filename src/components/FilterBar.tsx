@@ -27,7 +27,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, n
         <input
           type="search"
           className="grow"
-          placeholder="Search by name..."
+          placeholder="Search by name, passport or ID..."
           value={filters.search}
           onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
         />
