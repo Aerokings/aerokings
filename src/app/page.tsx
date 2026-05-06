@@ -41,7 +41,7 @@ export default function Home() {
   const handleViewChange = (mode: ViewMode) => {
     if (mode === "admin" && !adminAuth) {
       const pwd = prompt("Enter admin password:");
-      if (pwd === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "airoking2024")) {
+      if (pwd === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Ajman@2026")) {
         setAdminAuth(true);
         setViewMode("admin");
       } else {
