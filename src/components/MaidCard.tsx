@@ -15,7 +15,7 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
 
   return (
     <div className="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">
-      <figure className="relative aspect-[3/4] bg-base-300 overflow-hidden">
+      <figure className="relative h-56 bg-base-300 overflow-hidden">
         {photoUrl ? (
           <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover" />
         ) : (
@@ -33,6 +33,13 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
             {getCategoryIcon(maid.category)} {maid.category}
           </span>
         </div>
+        {maid.religion && (
+          <div className="absolute bottom-2 left-2">
+            <span className={`badge badge-sm font-bold ${maid.religion.toLowerCase() === "muslim" || maid.religion.toLowerCase() === "islam" ? "bg-emerald-600 text-white border-emerald-700" : "bg-amber-500 text-white border-amber-600"}`}>
+              ☪ {maid.religion.toLowerCase() === "muslim" || maid.religion.toLowerCase() === "islam" ? "Muslim" : "Non-Muslim"}
+            </span>
+          </div>
+        )}
       </figure>
       <div className="card-body p-4 gap-1">
         <h3 className="card-title text-base mb-1">{maid.name}</h3>
