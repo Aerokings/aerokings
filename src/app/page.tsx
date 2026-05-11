@@ -8,6 +8,7 @@ import { MaidGrid } from "@/components/MaidGrid";
 import { MaidDetail } from "@/components/MaidDetail";
 import { AdminPanel } from "@/components/AdminPanel";
 import { supabase } from "@/lib/supabase";
+import { trackPageView } from "@/utils/visitor-tracker";
 
 export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>("browse");
@@ -36,6 +37,7 @@ export default function Home() {
 
   useEffect(() => {
     loadMaids();
+    trackPageView('/');
   }, [loadMaids]);
 
   const handleViewChange = (mode: ViewMode) => {

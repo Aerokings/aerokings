@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useRef } from "react";
-import { Plus, Trash2, Edit, Save, X, Upload, Globe, User, Briefcase, MapPin, Heart, ChevronDown, ChevronUp, Search, Camera, Image } from "lucide-react";
+import { Plus, Trash2, Edit, Save, X, Upload, Globe, User, Briefcase, MapPin, Heart, ChevronDown, ChevronUp, Search, Camera, Image, BarChart3 } from "lucide-react";
 import { Maid } from "@/types";
 import { NATIONALITIES, CATEGORIES, EMIRATES, RELIGIONS, getStatusBadgeClass, getLocationLabel, formatSalary, getCategoryColor, getCategoryIcon } from "@/utils/helpers";
 import { supabase, getPhotoUrl } from "@/lib/supabase";
+import { Analytics } from "@/components/Analytics";
 
 interface AdminPanelProps {
   maids: Maid[];
@@ -27,6 +28,7 @@ const emptyForm: FormData = {
 };
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
+  const [activeTab, setActiveTab] = useState<"maids" | "analytics">("maids");
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
@@ -191,18 +193,41 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
         <h2 className="text-lg font-bold flex items-center gap-2">
-          <Briefcase size={20} /> Manage Housemaids
-          <span className="badge badge-primary badge-sm">{maids.length}</span>
+          <Briefcase size={20} /> Admin Panel
         </h2>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 sm:flex-none">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
-            <input className="input input-bordered input-sm pl-8 w-full sm:w-56" placeholder="Search maids..."
-              value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-          </div>
-          <button className="btn btn-primary btn-sm" onClick={openNew}><Plus size={14} /> Add New</button>
-        </div>
       </div>
+
+      <div className="tabs tabs-bordered mb-4">
+        <button
+          className={`tab ${activeTab === "maids" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("maids")}
+        >
+          <Briefcase size={16} className="mr-2" /> Manage Maids ({maids.length})
+        </button>
+        <button
+          className={`tab ${activeTab === "analytics" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("analytics")}
+        >
+          <BarChart3 size={16} className="mr-2" /> Analytics
+        </button>
+      </div>
+
+      {activeTab === "maids" && (
+        <>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              Manage Housemaids
+              <span className="badge badge-primary badge-sm">{maids.length}</span>
+            </h2>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-none">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
+                <input className="input input-bordered input-sm pl-8 w-full sm:w-56" placeholder="Search maids..."
+                  value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              </div>
+              <button className="btn btn-primary btn-sm" onClick={openNew}><Plus size={14} /> Add New</button>
+            </div>
+          </div>
 
       {showForm && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
@@ -510,6 +535,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
           <strong>Photo Upload:</strong> Click the 📷 button in the table or use the photo upload section when adding/editing a maid.
         </div>
       </div>
+        </>
+      )}
+
+      {activeTab === "analytics" && (
+        <Analytics />
+      )}
     </div>
   );
 };
