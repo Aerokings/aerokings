@@ -159,11 +159,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
 
   const handleDelete = async (id: number) => {
     try {
-      await supabase.from("maids").delete().eq("id", id);
+      console.log("Deleting maid ID:", id);
+      const { error } = await supabase.from("maids").delete().eq("id", id);
+      if (error) {
+        console.error("Delete error:", error);
+        alert("Failed to delete: " + error.message);
+        return;
+      }
+      console.log("Delete successful, refreshing...");
       setDeleteConfirm(null);
-      onRefresh();
+      // Add a small delay to ensure database catches up
+      setTimeout(() => onRefresh(), 500);
     } catch (err) {
       console.error("Failed to delete maid:", err);
+      alert("Error: " + (err instanceof Error ? err.message : "Unknown error"));
     }
   };
 
