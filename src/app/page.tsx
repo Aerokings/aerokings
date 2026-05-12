@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Maid, Filters, ViewMode } from "@/types";
