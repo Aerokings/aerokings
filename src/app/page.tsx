@@ -1,7 +1,7 @@
 "use client";
-import Link from 'next/link';
 
 import React, { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { Maid, Filters, ViewMode } from "@/types";
 import { Header } from "@/components/Header";
 import { FilterBar } from "@/components/FilterBar";
@@ -103,6 +103,11 @@ export default function Home() {
               Human resources provision &nbsp;|&nbsp; Tour operations &amp; reservation services.
             </p>
             <div className="divider divider-neutral my-2"></div>
+            <div className="flex justify-center gap-4 text-xs">
+              <Link href="/terms" className="link link-hover opacity-70 hover:opacity-100">
+                Terms of Service
+              </Link>
+            </div>
             <p className="text-xs opacity-70">
               © 2026 Kadhama. All Rights Reserved.
             </p>
