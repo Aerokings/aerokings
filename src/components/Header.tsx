@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { Crown, Users, Settings } from "lucide-react";
+import Image from "next/image";
+import { Users, Settings } from "lucide-react";
 import { ViewMode } from "@/types";
 
 interface HeaderProps {
@@ -14,11 +15,13 @@ export const Header: React.FC<HeaderProps> = ({ viewMode, onViewChange, maidCoun
     <div className="navbar bg-base-200 px-4 shadow-sm sticky top-0 z-50">
       <div className="navbar-start">
         <div className="flex items-center gap-2">
-          <Crown className="text-primary" size={24} />
-          <span className="text-lg font-bold tracking-wide">
-            <span className="text-primary">AERO</span>
-            <span className="text-secondary">KINGS</span>
-          </span>
+          <Image 
+            src="/kadhama-logo.png" 
+            alt="Kadhama Logo" 
+            width={50} 
+            height={50}
+            className="h-auto w-auto"
+          />
         </div>
       </div>
       <div className="navbar-center">
@@ -40,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ viewMode, onViewChange, maidCoun
         </div>
       </div>
       <div className="navbar-end">
-        <span className="text-xs text-base-content/50">Dubai Recruitment</span>
+        <span className="text-xs font-semibold text-primary">kadhama.com</span>
       </div>
     </div>
   );
