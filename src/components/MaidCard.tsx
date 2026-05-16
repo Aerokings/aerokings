@@ -10,7 +10,7 @@ interface MaidCardProps {
 }
 
 export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
-  const photoUrl = maid.photo_filename ? getPhotoUrl(maid.photo_filename) : null;
+  const photoUrl = maid.photo_url ? getPhotoUrl(maid.photo_url) : null;
 
   return (
     <div className="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">

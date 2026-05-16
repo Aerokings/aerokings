@@ -7,7 +7,7 @@ export interface Maid {
   bio: string | null;
   location_type: 'inside' | 'outside';
   status: 'available' | 'booked' | 'inactive';
-  photo_filename: string | null;
+  photo_url: string | null;
   cv_filename: string | null;
   monthly_salary: number | null;
   salary: number | null;

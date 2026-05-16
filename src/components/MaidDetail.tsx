@@ -15,7 +15,7 @@ interface MaidDetailProps {
 }
 
 export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh }) => {
-  const photoUrl = maid.photo_filename ? getPhotoUrl(maid.photo_filename) : null;
+  const photoUrl = maid.photo_url ? getPhotoUrl(maid.photo_url) : null;
   const [booking, setBooking] = useState(false);
   const [justBooked, setJustBooked] = useState(false);
   const [showChat, setShowChat] = useState(false);
