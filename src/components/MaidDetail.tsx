@@ -130,6 +130,52 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
               </div>
             )}
 
+            {expBreakdown.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-sm mb-2 flex items-center gap-1">
+                  <Briefcase size={16} /> Work Experience by Country
+                </h3>
+                <div className="space-y-1">
+                  {expBreakdown.map((exp, idx) => (
+                    <div key={idx} className="text-sm text-base-content/80 flex justify-between">
+                      <span>{exp.country}</span>
+                      <span className="font-semibold">{exp.years}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {maid.languages && (
+              <div>
+                <h3 className="font-semibold text-sm mb-2 flex items-center gap-1">
+                  <Languages size={16} /> Languages
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {maid.languages.split(',').map((lang, idx) => (
+                    <span key={idx} className="badge badge-outline text-xs">
+                      {lang.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cookingList.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-sm mb-2 flex items-center gap-1">
+                  <UtensilsCrossed size={16} /> Cooking Specialties
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {cookingList.map((dish, idx) => (
+                    <span key={idx} className="badge badge-warning text-xs">
+                      {dish}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {maid.skills && (
               <div>
                 <h3 className="font-semibold text-sm mb-2">Skills</h3>
