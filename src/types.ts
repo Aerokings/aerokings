@@ -10,6 +10,7 @@ export interface Maid {
   photo_filename: string | null;
   cv_filename: string | null;
   monthly_salary: number | null;
+  salary: number | null;
   languages: string | null;
   religion: string | null;
   marital_status: string | null;
@@ -20,6 +21,7 @@ export interface Maid {
   experience_breakdown: string | null;
   cooking_skills: string | null;
   available_emirates: string | null;
+  passport_number: string | null;
   video_url: string | null;
   created_at: string;
   updated_at: string;
@@ -28,9 +30,8 @@ export interface Maid {
 export interface Filters {
   search: string;
   nationality: string;
-  location_type: string;
-  status: string;
   category: string;
+  rateRange: string;
 }
 
 export type ViewMode = 'browse' | 'admin';

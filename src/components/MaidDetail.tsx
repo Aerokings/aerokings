@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   X, MessageCircle, MapPin, Briefcase, Globe, Heart,
   BookOpen, DollarSign, Calendar, FileText, Ruler, Weight, UtensilsCrossed, Languages, CheckCircle, PartyPopper, Play
 } from 'lucide-react';
 import { Maid } from '../types';
-import { getWhatsAppLink, formatSalary, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon, escapeSQL } from '../utils/helpers';
+import { getWhatsAppLink, formatSalary, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from '../utils/helpers';
 import { ChatBot } from './ChatBot';
+import { getPhotoUrl, supabase } from '../lib/supabase';
 
 interface MaidDetailProps {
   maid: Maid;
@@ -14,7 +15,7 @@ interface MaidDetailProps {
 }
 
 export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh }) => {
-  const [photoData, setPhotoData] = useState<string | null>(null);
+  const photoUrl = maid.photo_filename ? getPhotoUrl(maid.photo_filename) : null;
   const [booking, setBooking] = useState(false);
   const [justBooked, setJustBooked] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -22,50 +23,25 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
   const isBooked = maid.status === 'booked' || justBooked;
   const maidRef = `AK-${String(maid.id).padStart(4, '0')}`;
 
-  useEffect(() => {
-    if (maid.photo_filename) {
-      window.tasklet
-        .readBinaryFileFromDisk(`/agent/home/apps/airoking/uploads/${maid.photo_filename}`)
-        .then((base64) => {
-          const ext = maid.photo_filename!.split('.').pop()?.toLowerCase() || 'jpeg';
-          const mime = ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
-          setPhotoData(`data:${mime};base64,${base64}`);
-        })
-        .catch(() => setPhotoData(null));
-    }
-  }, [maid.photo_filename]);
-
   const handleBook = async () => {
     setBooking(true);
     try {
-      // Update maid status to booked
-      await window.tasklet.sqlExec(
-        `UPDATE maids SET status='booked', updated_at=datetime('now') WHERE id=${maid.id}`
-      );
+      const { error } = await supabase
+        .from('maids')
+        .update({ status: 'booked' })
+        .eq('id', maid.id);
+      if (error) throw error;
       setJustBooked(true);
       onRefresh?.();
-
-      // Send notification email to admin
-      try {
-        await window.tasklet.runTool('send_message', {
-          to: ['owner'],
-          subject: `🔔 New Booking: ${maid.name} (${maidRef})`,
-          body: `## New Housemaid Booking Alert!\n\n**Reference:** ${maidRef}\n**Housemaid:** ${maid.name}\n**Nationality:** ${maid.nationality}\n**Category:** ${maid.category}\n**Age:** ${maid.age || 'N/A'}\n**Rate:** ${formatSalary(maid.monthly_salary)}/month\n**Experience:** ${maid.experience_years} years\n\n---\n\nA customer has booked this housemaid through the AiroKing website. Please follow up with the customer as soon as possible.\n\n*— AiroKing Recruitment System*`
-        });
-      } catch (emailErr) {
-        console.error('Failed to send admin notification:', emailErr);
-      }
-
-      // Show chatbot after booking
       setShowChat(true);
     } catch (err) {
       console.error('Booking failed:', err);
+      alert('Booking failed. Please try again.');
     } finally {
       setBooking(false);
     }
   };
 
-  // Parse experience breakdown
   const expBreakdown = maid.experience_breakdown
     ? maid.experience_breakdown.split(',').map(item => {
         const parts = item.trim().split(':');
@@ -73,7 +49,6 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
       })
     : [];
 
-  // Parse cooking skills
   const cookingList = maid.cooking_skills
     ? maid.cooking_skills.split(',').map(s => s.trim()).filter(Boolean)
     : [];
@@ -82,7 +57,6 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
     <>
       <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div className="bg-base-100 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-xl">
-          {/* Booking Success Banner */}
           {justBooked && (
             <div className="bg-success text-success-content p-4 text-center">
               <div className="text-2xl mb-1">🎉</div>
@@ -99,10 +73,9 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
             </div>
           )}
 
-          {/* Header photo */}
           <div className="relative h-64 bg-base-300">
-            {photoData ? (
-              <img src={photoData} alt={maid.name} className="w-full h-full object-cover" />
+            {photoUrl ? (
+              <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover" />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-base-content/30">
                 <Globe size={64} />
@@ -110,259 +83,125 @@ export const MaidDetail: React.FC<MaidDetailProps> = ({ maid, onClose, onRefresh
               </div>
             )}
             <button
-              className="btn btn-circle btn-sm btn-ghost absolute top-3 right-3 bg-base-100/80"
               onClick={onClose}
+              className="absolute top-3 right-3 btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100"
             >
-              <X size={16} />
+              <X size={18} />
             </button>
-            {/* Booked overlay */}
-            {isBooked && (
-              <div className="absolute inset-0 bg-error/20 flex items-center justify-center">
-                <span className="badge badge-error badge-lg text-white font-bold text-lg px-6 py-4 shadow-lg">
-                  🔒 BOOKED
-                </span>
-              </div>
-            )}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-base-100 to-transparent h-16" />
           </div>
 
-          <div className="p-5 -mt-6 relative">
-            {/* Name & status */}
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h2 className="text-xl font-bold">{maid.name}</h2>
-              <span className={`badge ${getCategoryColor(maid.category)} badge-sm font-bold`}>
-                {getCategoryIcon(maid.category)} {maid.category}
-              </span>
-              <span className={`badge ${isBooked ? 'badge-error' : getStatusBadgeClass(maid.status)} badge-sm`}>
-                {isBooked ? '🔒 Booked' : maid.status}
-              </span>
-            </div>
-            <p className="text-sm text-base-content/60 mb-4">Reference ID: {maidRef}</p>
-
-            {/* Personal Info */}
-            <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-              <BookOpen size={14} /> Personal Information
-            </h4>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <InfoItem icon={<MapPin size={14} />} label="Nationality" value={maid.nationality} />
-              <InfoItem icon={<Calendar size={14} />} label="Age" value={maid.age ? `${maid.age} years` : 'N/A'} />
-              <InfoItem icon={<Ruler size={14} />} label="Height" value={maid.height || 'N/A'} />
-              <InfoItem icon={<Weight size={14} />} label="Weight" value={maid.weight || 'N/A'} />
-              <InfoItem icon={<Heart size={14} />} label="Religion" value={maid.religion || 'N/A'} />
-              <InfoItem icon={<Heart size={14} />} label="Marital Status" value={maid.marital_status || 'N/A'} />
+          <div className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold">{maid.name}</h2>
+              {maid.passport_number && (
+                <p className="text-sm text-base-content/70">Passport: {maid.passport_number}</p>
+              )}
             </div>
 
-            {/* Languages */}
-            {maid.languages && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-                  <Languages size={14} /> Languages Known
-                </h4>
-                <div className="flex flex-wrap gap-1">
-                  {maid.languages.split(',').map((lang, i) => (
-                    <span key={i} className="badge badge-outline badge-sm">{lang.trim()}</span>
-                  ))}
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              {maid.nationality && (
+                <div>
+                  <span className="badge badge-sm">🌍 {maid.nationality}</span>
                 </div>
-              </div>
-            )}
-
-            {/* Work Info */}
-            <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-              <Briefcase size={14} /> Work Details
-            </h4>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <InfoItem icon={<Briefcase size={14} />} label="Total Experience" value={`${maid.experience_years} years`} />
-              <InfoItem
-                icon={<Globe size={14} />}
-                label="Location"
-                value={isBooked ? '🔒 Booked' : getLocationLabel(maid.location_type)}
-                highlight={isBooked ? 'error' : undefined}
-              />
-              <InfoItem icon={<DollarSign size={14} />} label="Rate" value={formatSalary(maid.monthly_salary)} />
+              )}
+              {maid.age && (
+                <div>
+                  <span className="badge badge-sm">📅 {maid.age} years</span>
+                </div>
+              )}
+              {maid.experience_years !== undefined && (
+                <div>
+                  <span className="badge badge-sm">⭐ {maid.experience_years} yrs exp</span>
+                </div>
+              )}
+              {maid.category && (
+                <div>
+                  <span className={`badge ${getCategoryColor(maid.category)} badge-sm`}>
+                    {getCategoryIcon(maid.category)} {maid.category}
+                  </span>
+                </div>
+              )}
             </div>
 
-            {/* Available Emirates */}
-            {maid.available_emirates && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-                  <MapPin size={14} /> Available in Emirates
-                </h4>
-                <div className="flex flex-wrap gap-1">
-                  {maid.available_emirates.split(',').map((em, i) => (
-                    <span key={i} className="badge badge-primary badge-sm">{em.trim()}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Experience Breakdown */}
-            {expBreakdown.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-                  <Globe size={14} /> Experience Breakdown
-                </h4>
-                <div className="bg-base-200 rounded-lg overflow-hidden">
-                  <table className="table table-sm">
-                    <thead>
-                      <tr>
-                        <th className="text-xs">Country</th>
-                        <th className="text-xs">Duration</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {expBreakdown.map((exp, i) => (
-                        <tr key={i}>
-                          <td className="text-sm">{exp.country}</td>
-                          <td className="text-sm font-medium">{exp.years}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Cooking Skills (only for Cooks) */}
-            {cookingList.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-                  <UtensilsCrossed size={14} /> Cooking Skills
-                </h4>
-                <div className="flex flex-wrap gap-1">
-                  {cookingList.map((food, i) => (
-                    <span key={i} className="badge badge-warning badge-sm">{food}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* General Skills */}
-            {maid.skills && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 flex items-center gap-1 text-primary">
-                  <FileText size={14} /> Skills
-                </h4>
-                <div className="flex flex-wrap gap-1">
-                  {maid.skills.split(',').map((skill, i) => (
-                    <span key={i} className="badge badge-outline badge-sm">{skill.trim()}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Bio */}
             {maid.bio && (
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-1">About</h4>
-                <p className="text-sm text-base-content/70 whitespace-pre-wrap">{maid.bio}</p>
+              <div>
+                <h3 className="font-semibold text-sm mb-2">About</h3>
+                <p className="text-sm text-base-content/80">{maid.bio}</p>
               </div>
             )}
 
-            {/* CV indicator */}
-            {maid.cv_filename && (
-              <div className="alert alert-info py-2 mb-4">
-                <FileText size={16} />
-                <span className="text-sm">CV available — contact us via WhatsApp for details</span>
+            {maid.skills && (
+              <div>
+                <h3 className="font-semibold text-sm mb-2">Skills</h3>
+                <p className="text-sm text-base-content/80">{maid.skills}</p>
               </div>
             )}
 
-            {/* Action buttons */}
-            <div className="flex flex-col gap-2">
-              {/* Book / Booked button */}
-              {isBooked ? (
-                <div className="alert alert-error py-3">
-                  <CheckCircle size={18} />
-                  <span className="font-semibold">This housemaid has been booked</span>
+            {maid.video_url && (
+              <button
+                onClick={() => setShowVideo(true)}
+                className="btn btn-info btn-sm w-full"
+              >
+                <Play size={14} /> Watch Video
+              </button>
+            )}
+
+            {showVideo && maid.video_url && (
+              <div className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4">
+                <div className="relative w-full max-w-2xl aspect-video">
+                  <button
+                    onClick={() => setShowVideo(false)}
+                    className="absolute -top-10 right-0 btn btn-circle btn-sm"
+                  >
+                    <X size={18} />
+                  </button>
+                  <iframe
+                    className="w-full h-full rounded-lg"
+                    src={maid.video_url}
+                    allow="autoplay"
+                    allowFullScreen
+                  />
                 </div>
-              ) : (
+              </div>
+            )}
+
+            <div className="border-t pt-4 space-y-2">
+              <div className="flex justify-between">
+                <span>Rate (Tadbeer Fee):</span>
+                <span className="font-bold text-primary">{formatSalary(maid.monthly_salary)}</span>
+              </div>
+              {maid.salary && (
+                <div className="flex justify-between">
+                  <span>Monthly Salary:</span>
+                  <span className="font-bold text-secondary">{formatSalary(maid.salary)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm">
+                <span>Location:</span>
+                <span>{isBooked ? '🔒 Booked' : getLocationLabel(maid.location_type)}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <button onClick={onClose} className="btn btn-outline btn-sm flex-1">
+                <X size={14} /> Close
+              </button>
+              {!isBooked && (
                 <button
-                  className="btn btn-primary btn-block"
                   onClick={handleBook}
                   disabled={booking}
+                  className="btn btn-primary btn-sm flex-1"
                 >
-                  {booking ? (
-                    <span className="loading loading-spinner loading-sm" />
-                  ) : (
-                    <>
-                      <CheckCircle size={18} /> Book This Housemaid
-                    </>
-                  )}
+                  {booking ? <span className="loading loading-spinner loading-xs" /> : <Heart size={14} />}
+                  {booking ? 'Booking...' : 'Book Now'}
                 </button>
               )}
-
-              {/* Watch Video button */}
-              {maid.video_url && (
-                <button
-                  className="btn btn-info btn-block"
-                  onClick={() => setShowVideo(true)}
-                >
-                  <Play size={18} /> Watch Video
-                </button>
-              )}
-
-              {/* WhatsApp CTA */}
-              <a
-                href={getWhatsAppLink(maid)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-success btn-block"
-              >
-                <MessageCircle size={18} />
-                Chat on WhatsApp About {maid.name}
-              </a>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Video Player Modal */}
-      {showVideo && maid.video_url && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-base-100 rounded-2xl max-w-2xl w-full overflow-hidden shadow-xl">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="font-bold text-lg">{maid.name} - Video Profile</h3>
-              <button
-                className="btn btn-circle btn-sm btn-ghost"
-                onClick={() => setShowVideo(false)}
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="aspect-video bg-black">
-              <iframe
-                src={maid.video_url}
-                title={`${maid.name} Video Profile`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Chatbot - shows after booking */}
-      {showChat && (
-        <ChatBot
-          maidName={maid.name}
-          maidRef={maidRef}
-          onClose={() => setShowChat(false)}
-        />
-      )}
+      {showChat && <ChatBot maidName={maid.name} maidRef={maidRef} onClose={() => setShowChat(false)} />}
     </>
   );
 };
-
-const InfoItem: React.FC<{
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  highlight?: 'error' | 'success';
-}> = ({ icon, label, value, highlight }) => (
-  <div className={`rounded-lg p-2 ${highlight === 'error' ? 'bg-error/10 border border-error/30' : 'bg-base-200'}`}>
-    <div className="flex items-center gap-1 text-xs text-base-content/50 mb-0.5">
-      {icon} {label}
-    </div>
-    <p className={`text-sm font-medium ${highlight === 'error' ? 'text-error' : ''}`}>{value}</p>
-  </div>
-);

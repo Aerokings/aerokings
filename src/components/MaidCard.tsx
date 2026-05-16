@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { MessageCircle, MapPin, Briefcase, Eye, Globe, Play } from 'lucide-react';
 import { Maid } from '../types';
 import { getWhatsAppLink, formatSalary, getLocationLabel, getStatusBadgeClass, getCategoryColor, getCategoryIcon } from '../utils/helpers';
+import { getPhotoUrl } from '../lib/supabase';
 
 interface MaidCardProps {
   maid: Maid;
@@ -9,27 +10,14 @@ interface MaidCardProps {
 }
 
 export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
-  const [photoData, setPhotoData] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (maid.photo_filename) {
-      window.tasklet
-        .readBinaryFileFromDisk(`/agent/home/apps/airoking/uploads/${maid.photo_filename}`)
-        .then((base64) => {
-          const ext = maid.photo_filename!.split('.').pop()?.toLowerCase() || 'jpeg';
-          const mime = ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
-          setPhotoData(`data:${mime};base64,${base64}`);
-        })
-        .catch(() => setPhotoData(null));
-    }
-  }, [maid.photo_filename]);
+  const photoUrl = maid.photo_filename ? getPhotoUrl(maid.photo_filename) : null;
 
   return (
     <div className="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">
       {/* Photo */}
       <figure className="relative h-56 bg-base-300 overflow-hidden">
-        {photoData ? (
-          <img src={photoData} alt={maid.name} className="w-full h-full object-cover" />
+        {photoUrl ? (
+          <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover" />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-base-content/30">
             <Globe size={48} />

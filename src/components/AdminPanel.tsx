@@ -74,7 +74,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
     setUploadingPhoto(maidId);
     try {
       const path = await uploadPhoto(file, maidId);
-      await supabase.from("maids").update({ photo_url: path }).eq("id", maidId);
+      await supabase.from("maids").update({ photo_filename: path }).eq("id", maidId);
       onRefresh();
     } catch (err) {
       console.error("Quick photo upload failed:", err);
@@ -108,7 +108,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
     });
     setEditingId(maid.id);
     setPhotoFile(null);
-    setPhotoPreview(maid.photo_url ? getPhotoUrl(maid.photo_url) : null);
+    setPhotoPreview(maid.photo_filename ? getPhotoUrl(maid.photo_filename) : null);
     setShowForm(true);
   };
 
@@ -135,14 +135,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
         if (error) throw error;
         if (photoFile) {
           const path = await uploadPhoto(photoFile, editingId);
-          await supabase.from("maids").update({ photo_url: path }).eq("id", editingId);
+          await supabase.from("maids").update({ photo_filename: path }).eq("id", editingId);
         }
       } else {
         const { data, error } = await supabase.from("maids").insert(record).select("id").single();
         if (error) throw error;
         if (photoFile && data) {
           const path = await uploadPhoto(photoFile, data.id);
-          await supabase.from("maids").update({ photo_url: path }).eq("id", data.id);
+          await supabase.from("maids").update({ photo_filename: path }).eq("id", data.id);
         }
       }
       setShowForm(false);
@@ -464,7 +464,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ maids, onRefresh }) => {
                     <td>
                       {uploadingPhoto === maid.id ? (
                         <span className="loading loading-spinner loading-xs" />
-                      ) : maid.photo_url ? (
+                      ) : maid.photo_filename ? (
                         <div className="flex items-center gap-1">
                           <span className="badge badge-success badge-xs">✓ Photo</span>
                           <button className="btn btn-ghost btn-xs" onClick={(e) => { e.stopPropagation(); triggerQuickUpload(maid.id); }}>
