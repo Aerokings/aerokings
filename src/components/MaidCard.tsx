@@ -15,7 +15,7 @@ export const MaidCard: React.FC<MaidCardProps> = ({ maid, onViewDetail }) => {
   return (
     <div className="card bg-base-200 shadow-md hover:shadow-lg transition-shadow">
       {/* Photo */}
-      <figure className="relative h-56 bg-base-300 overflow-hidden">
+      <figure className="relative w-full aspect-[3/4] bg-base-300 overflow-hidden">
         {photoUrl ? (
           <img src={photoUrl} alt={maid.name} className="w-full h-full object-cover" />
         ) : (
