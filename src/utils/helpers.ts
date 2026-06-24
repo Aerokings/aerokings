@@ -1,6 +1,6 @@
 import { Maid } from "../types";
 
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "94781523008";
+export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "0094740686971";
 
 export function getWhatsAppLink(maid: Maid): string {
   const message = encodeURIComponent(
